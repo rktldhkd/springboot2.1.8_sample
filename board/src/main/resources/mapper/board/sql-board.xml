@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 값 : mapper 인터페이스의 경로. 파일명까지 싹 다 -->
+<!-- select 등의 태그안의 id 값 : mapper 인터페이스의 메소드명 -->
+<!-- select 등의 태그안의 resultType 값 : DTO 설정한다면, 그 DTO객체의 경로, 파일명까지 싹 다 -->
+<mapper namespace="board.board.mapper.BoardMapper">
+	<select id="selectBoardList" resultType="board.board.dto.BoardDto">
+		<![CDATA[
+			SELECT
+				board_idx,
+				title,
+				creator_id,
+				hit_cnt,
+				DATE_FORMAT(created_datetime, '%Y.%m.%d %H:%i:%s') AS created_datetime
+			FROM
+				t_board
+			WHERE
+				deleted_yn = 'N'
+			ORDER BY board_idx DESC
+		]]>
+	</select>
+	
+	<!-- #{변수} 사용 시, dto 클래스의 getter 메소드로 해당 변수값을 가져온다.  -->
+	<!-- NOW() 함수는 MySQL 5.5 이상에서만 사용 가능. -->
+	<!-- 
+		실행을 정상적으로 완료하면 Insert 된 행의 ID값을 가지는데 이 ID값은 DataClass에 선언되어있는(Map 형태일 경우 key 값이 ID) 
+		필드에 저절로 들어가고 Java단에서 호출이 가능해진다.
+		
+		insert 후, dto boardIdx에 자동으로 증가한 값이 들어간다.
+		자바단에서 getter 메소드로 호출 시, 증가한 id값이 리턴된다.
+	-->
+	<insert id="insertBoard" parameterType="board.board.dto.BoardDto" useGeneratedKeys="true" keyProperty="boardIdx">
+		<![CDATA[
+			INSERT INTO t_board
+			(
+				title,
+				contents,
+				created_datetime,
+				creator_id
+			)
+			VALUES
+			(
+				#{title},
+				#{contents},
+				NOW(),
+				'admin'
+			)
+		]]>
+	</insert>
+	
+	<!-- 
+	파일 목록이 하나 이상인경우도 있어서 마이바티스의 foreach문으로 collection의 반복 처리. 
+	여러 개의 param(list, array 등과같은)이 넘어와서 처리해야할 경우, foreach문 사용.
+	collection에 list나 array 형식의 데이터 사용. 
+	collection은 자바단에서 넘어온 데이터 객체, item은 마이바티스에서 변수명으로 쓸 값.
+	separator 는 구분자 설정. 설정한 문자로 값을 구분한다. values에 들어갈 값이 여러 개 이므로 사용.
+	-->
+	<insert id="insertBoardFileList" parameterType="board.board.dto.BoardFileDto">
+		<![CDATA[
+			INSERT INTO t_file
+			(
+				board_idx,
+				original_file_name,
+				stored_file_path,
+				file_size,
+				creator_id,
+				created_datetime
+			)
+			VALUES
+		]]>
+		<foreach collection="list" item="file" separator=",">
+			(
+				#{file.boardIdx},
+				#{file.originalFileName},
+				#{file.storedFilePath},
+				#{file.fileSize},
+				'admin',
+				NOW()
+			)
+		</foreach>
+	</insert>
+	
+	<update id="updateHitCnt" parameterType="int">
+		<![CDATA[
+			UPDATE 
+				t_board
+			SET 
+				hit_cnt = hit_cnt+1
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<select id="selectBoardDetail" parameterType="int" resultType="board.board.dto.BoardDto">
+		SELECT
+			board_idx, title,
+			contents, hit_cnt,
+			DATE_FORMAT(created_datetime, '%Y.%m.%d %H:%i:%s') AS created_datetime,
+			creator_id
+		FROM
+			t_board
+		WHERE
+			board_idx = #{boardIdx} AND deleted_yn = 'N'
+	</select>
+	
+	<!-- format과 round함수를 통해 파일 크기를 소수점 반올림하여 kb 크기로 변환 -->
+	<select id="selectBoardFileList" parameterType="int" resultType="board.board.dto.BoardFileDto">
+		<![CDATA[
+			SELECT
+				idx,
+				board_idx,
+				original_file_name,
+				FORMAT(ROUND(file_size / 1024), 0) AS file_size
+			FROM
+				t_file
+			WHERE
+				board_idx = #{boardIdx}
+				AND deleted_yn = 'N'
+		]]>
+	</select>
+	
+	<select id="selectBoardFileInformation" parameterType="map" resultType="board.board.dto.BoardFileDto">
+		<![CDATA[
+			SELECT
+				original_file_name,
+				stored_file_path,
+				file_size
+			FROM
+				t_file
+			WHERE
+				idx = #{idx}
+				AND board_idx = #{boardIdx}
+				AND deleted_yn = 'N'
+		]]>
+	</select>
+	
+	<update id="updateBoard" parameterType="board.board.dto.BoardDto">
+		<![CDATA[
+			UPDATE
+				t_board
+			SET
+				title = #{title},
+				contents = #{contents},
+				updated_datetime = NOW(),
+				updater_id = 'admin'
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<delete id="deleteBoard">
+		<![CDATA[
+			UPDATE
+				t_board
+			SET
+				deleted_yn = 'Y',
+				updated_datetime = NOW(),
+				updater_id = 'admin'
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</delete>
+</mapper>

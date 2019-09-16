@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>board write</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" href="../../css/style.css"></link>
+</head>
+<body>
+	<div class="container">
+		<h2>게시판 상세 화면</h2>
+		<form id="frm" method="post">
+			<table class="board_detail">
+				<tbody>
+					<tr>
+						<th scope="row">글번호</th>
+						<td th:text="${board.boardIdx}"></td>
+						<th scope="row">조회수</th>
+						<td th:text="${board.hitCnt}"></td>
+					</tr>
+					<tr>
+						<th scope="row">작성자</th>
+						<td th:text="${board.creatorId}"></td>
+						<th scope="row">작성일</th>
+						<td th:text="${board.createdDatetime}"></td>
+					</tr>
+					<tr>
+						<th scope="row">제목</th>
+						<td colspan="3">
+							<input type="text" id="title" name="title" th:value="${board.title}" />
+						</td>
+					</tr>
+					<tr>
+						<td class="view_text" colspan="4">
+							<textarea title="내용" id="contents" name="contents" th:text="${board.contents}"></textarea>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<input type="hidden" id="boardIdx" name="boardIdx" th:value="${board.boardIdx}"/>
+		</form>
+		
+		<div class="file_list">
+			<!-- |내용| :  thymeleaf에서 변수와 고정된 문자열 혼합하여 출력할때 사용. -->
+			<a th:href="@{/board/downloadBoardFile(idx=${list.idx}, boardIdx=${list.boardIdx})}" 
+				 th:each="list : ${board.fileList}" 
+				 th:text="|${list.originalFileName} (${list.fileSize}kb)|">
+			</a>
+		</div>
+		
+		<input type="button" id="list" class="btn" value="목록으로" />
+		<input type="button" id="edit" class="btn" value="수정하기" />
+		<input type="button" id="delete" class="btn" value="삭제하기" />
+		
+		<!-- CDN -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!-- js -->
+		<script>
+			$(function(){
+				$("#list").on("click", function(){
+					location.href="openBoardList"; //@RequestMapping의 풀경로가 아닌 마지막꺼만 써도 되는 듯.
+				});//list.on
+				$("#edit").on("click", function(){
+					var frm		= $("#frm")[0];
+					frm.action	="updateBoard";
+					frm.submit();
+				});//edit.on
+				$("#delete").on("click", function(){
+					var frm 	= $("#frm")[0];
+					frm.action	="deleteBoard";
+					frm.submit();
+				});//delete.on
+			});//jquery
+		</script>
+	</div>
+</body>
+</html>
