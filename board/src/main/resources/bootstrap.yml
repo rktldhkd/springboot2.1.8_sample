@@ -1,0 +1,59 @@
+#공통 영역
+#spring.profiles.active 속성을 사용하여 사용할 설정 영역/파일을 지정했지만,
+#여기서는 프로젝트 run 시, run configuration에서 spring boot 탭-profile옵션 에서 직접 선택하겠다.
+#spring cloud config 기능 사용 시, yml 파일을 bootstrap.yml 로 해야한다.
+#spring cloud config 기능 사용 X시, 반드시 yml 파일 이름을 application.yml 로 해야한다.
+#spring cloud config : 설정만을 배포하는 서버(설정서버)를 두어서 설정 변경시 편리하게 해주는 기능.
+logging:  config: classpath:logback-${spring.profiles.active}.xml
+
+#cloud.config.uri/name값 과 spring.profiles의 값을 혼합하여 설정서버의 설정파일 조회 url 패턴 조합하는 듯.
+#설정서버의 설정파일의 url 조회 패턴 : 주소:포트번호/{application}/{profiles}/{label}  <- label은 생략가능.
+# uri : 포트값 까지의 주소.
+# name : {application} 에 들어갈 값. 보통 설정서버가 참조하는 github/bitbucket에 있는 설정파일명이나 설정서버의 프로젝트명을 지정함.
+#
+# 설정서버의 파일의 dev영역의 값을 불러와서 여기서 쓸 것이므로, 이곳의 설정영역값(profiles)도 dev로 줌.
+# 프로젝트의 run configuration의 profile속성값에 설정파일의 설정영역값을 입력하지 않았다면, 여기서 active 속성으로 지정해줘야 한다.
+spring:
+  profiles: dev
+  cloud:
+    config:
+      uri : http://34.84.147.129:8888
+      name : cloud-config
+    
+
+
+######
+#spring cloud config 사용 이전의 설정값들.
+#위의 logging도 포함시켜야한다.
+######
+#spring:
+#  datasource:
+#    hikari:
+#      connection-test-query: SELECT 1
+#      allow-pool-suspension: true
+#  jpa:#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    generate-ddl: true
+#    hibernate:#      use-new-id-generator-mappings: false
+#    
+##카멜표기-스네이크표기 호환
+#mybatis:#  configuration:#    map-underscore-to-camel-case: true
+#    
+#---
+##dev 설정 영역
+#spring:
+#  #설정영역 이름 정의, 공통영역에서 불러올 이름.#  profiles: dev
+#  datasource:#    hikari:#      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#      jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/study_springboot?user=admin&password=admin&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+#      username: admin
+#      password: admin
+#  thymeleaf:#    cache: false
+#  resources:#    cache:#      period: 0
+#      
+#---
+##production 설정영역
+#spring:#  profiles: production
+#  datasource:#    hikari:#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      jdbc-url: jdbc:mysql://localhost:3306/study_springboot?user=admin&password=admin&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+#      username: admin
+#      password: admin

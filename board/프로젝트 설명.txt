@@ -5,7 +5,14 @@ templates 폴더 : 여러가지 view 템플릿 파일 위치.(thymeleaf등등)
 
 static : 정적 자원 폴더.(이미지,파일,js파일 등)
 
-application.properties : app 및 스프링의 설정등에서 사용할 여러가지 프로퍼티property 정의.
+bootstarp.yml : 스프링 cloud config 사용하여 clinent단으로 지정, bootstarp.yml에서 config 서버를 지정하여 거기서 설정파일값 가져옴.
+
+//밑의 설정파일들은  bootstrap.yml 만들면서 설정파일로 안쓰려고 src/main/resources/origin_propertiesAndxml 에 박아두었다.
+//만일 프로젝트 설정에 문제가 생겨 에러가 나면 아래 파일들을 다 지워버리고 다시 실행해보자. 이전꺼 어떻게했는지 보려고 남겨둔거임.
+application~.properties : app 및 스프링의 설정등에서 사용할 여러가지 프로퍼티property 정의.
+application.properties : 개발환경, 운영환경에 관계없이 공통으로 사용하는 설정.
+application-dev.properties : 개발환경에서 사용할 설정.
+application-production.properties : 운영환경에서 사용할 설정.
 
 project and External Dependencies 항목 : 그레들에 명시한 프로젝트 필수 라이브러리 모음.
 

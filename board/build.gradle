@@ -23,6 +23,12 @@ repositories {//프로젝트에서 필요한 외부 저장소의 라이브러리
 	mavenCentral()
 }
 
+ext{
+	springCloudVersion = 'Finchley.RELEASE'//spring cloud config 버전
+}
+
+//actuator : http를 이용해서 app의 관리 및 모니터링에 도움. config server의 변경된 설정을 즉시 반영하는 등의 기능.
+//cloud-starter-config : 스프링 cloud config의 client 역할하도록 함.
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -33,10 +39,18 @@ dependencies {
 	compile group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4.1', version: '1.16'
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3'
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('org.springframework.cloud:spring-cloud-starter-config')
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }

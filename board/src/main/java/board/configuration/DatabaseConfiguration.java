@@ -28,8 +28,8 @@ import com.zaxxer.hikari.HikariDataSource;
  * 트랜잭션 설정.
  */
 @Configuration
-@PropertySource("classpath:/application.properties")
-@EnableTransactionManagement
+//yml설정파일 사용하므로 properties 사용하기위해선 주석 삭제. @PropertySource("classpath:/application.properties")
+@EnableTransactionManagement //트랜잭션 설정. 애노테이션 선언 후, 클래스 안에서 메소드로 transaction 객체를 불러오는 메소드를 @Bean설정 하면 되겠따.
 public class DatabaseConfiguration {
 	@Autowired
 	private ApplicationContext applicationContext; //마이바티스 설정 위함.
