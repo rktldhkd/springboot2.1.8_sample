@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.board'
-version = '1.0'//프로젝트 버전
+version = '0.0.1-SNAPSHOT'//프로젝트 버전
 sourceCompatibility = '1.8'//자바버전
 
 configurations {
