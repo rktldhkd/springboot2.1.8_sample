@@ -5,7 +5,7 @@ templates 폴더 : 여러가지 view 템플릿 파일 위치.(thymeleaf등등)
 
 static : 정적 자원 폴더.(이미지,파일,js파일 등)
 
-//bootstrap.yml 설정파일 dsadsad
+//bootstrap.yml 설정파일 
 bootstarp.yml : 스프링 cloud config 사용하여 clinent단으로 지정, bootstarp.yml에서 config 서버를 지정하여 거기서 설정파일값 가져옴.
 
 //밑의 설정파일들은  bootstrap.yml 만들면서 설정파일로 안쓰려고 src/main/resources/origin_propertiesAndxml 에 박아두었다.
